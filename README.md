@@ -17,4 +17,8 @@ root@kali:~# chmod +x /usr/bin/RBF
 root@kali:~# RBF -t <TARGET> -p <PORT> -w <WORDLIST>
 ```
 
+- <kbd>Tested On:</kbd>
+
+  * Kali
+
 ---
