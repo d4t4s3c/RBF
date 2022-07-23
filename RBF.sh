@@ -61,16 +61,16 @@ function check(){
 }
 
 function banner(){
-echo -e "$GREEN"
-echo -e "  ██████╗░██████╗░███████╗"
-echo -e "  ██╔══██╗██╔══██╗██╔════╝"
-echo -e "  ██████╔╝██████╦╝█████╗░░"
-echo -e "  ██╔══██╗██╔══██╗██╔══╝░░"
-echo -e "  ██║░░██║██████╦╝██║░░░░░"
-echo -e "  ╚═╝░░╚═╝╚═════╝░╚═╝░░░░░$END"
-echo -e "$WHITE$VAR22$END"
-echo -e "$WHITE$VAR13  $RED REDIS $WHITE$VAR7$RED BRUTE $WHITE$VAR7$RED FORCE $END  $WHITE$VAR13$END"
-echo -e "$WHITE$VAR22$END"
+        echo -e "$GREEN"
+        echo -e "  ██████╗░██████╗░███████╗"
+        echo -e "  ██╔══██╗██╔══██╗██╔════╝"
+        echo -e "  ██████╔╝██████╦╝█████╗░░"
+        echo -e "  ██╔══██╗██╔══██╗██╔══╝░░"
+        echo -e "  ██║░░██║██████╦╝██║░░░░░"
+        echo -e "  ╚═╝░░╚═╝╚═════╝░╚═╝░░░░░$END"
+        echo -e "$WHITE$VAR22$END"
+        echo -e "$WHITE$VAR13  $RED REDIS $WHITE$VAR7$RED BRUTE $WHITE$VAR7$RED FORCE $END  $WHITE$VAR13$END"
+        echo -e "$WHITE$VAR22$END"
 }
 
 function main(){
