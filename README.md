@@ -1,6 +1,4 @@
-# RBF
-
-**Redis Brute Force**
+# Redis Brute Force
 
 ![](/1.png)
 
