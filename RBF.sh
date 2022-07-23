@@ -69,7 +69,7 @@ function banner(){
         echo -e "  ██║░░██║██████╦╝██║░░░░░"
         echo -e "  ╚═╝░░╚═╝╚═════╝░╚═╝░░░░░$END"
         echo -e "$WHITE$VAR22$END"
-        echo -e "$WHITE$VAR13  $RED REDIS $WHITE$VAR7$RED BRUTE $WHITE$VAR7$RED FORCE $END  $WHITE$VAR13$END"
+        echo -e "$WHITE$VAR13  $RED REDIS $WHITE$VAR7$RED BRUTE $WHITE$VAR7$RED FORCE   $WHITE$VAR13$END"
         echo -e "$WHITE$VAR22$END"
 }
 
